@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  admin:
+    build:
+      context: ./smartparking
+      dockerfile: Dockerfile
+    image: "${PROJECT_NAME}:smartparking"
+    environment:
+      - ENVIRONMENT=dev
+    ports:
+      - "${ADMIN_PORT}:8000"
+    depends_on:
+      - db
+    restart: always
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: "${PROJECT_NAME}:api"
+    ports:
+      - "${API_PORT}:8001"
+    environment:
+      - ENVIRONMENT=dev
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:15.1-alpine
+    env_file:
+      - ./.env
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      PGDATA: "/var/lib/postgresql/data/${PROJECT_NAME}"
+      POSTGRES_DB: "${DB_NAME}"
+    volumes:
+      - "db_test_volume:/var/lib/postgresql/data/${PROJECT_NAME}"
+      - "./db/initdb.d/create-db.sh:/docker-entrypoint-initdb.d/create-db.sh"
+    restart: always
+
+  db_stg:
+    image: postgres:15.1-alpine
+    env_file:
+      - ./.env
+    ports:
+      - "${DB_PORT_STG}:5432"
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      PGDATA: "/var/lib/postgresql/data/${PROJECT_NAME}_stg"
+      POSTGRES_DB: "${DB_NAME}_stg"
+    volumes:
+      - "db_stg_volume:/var/lib/postgresql/data/${PROJECT_NAME}_stg"
+      - "./db/initdb.d/create-db.sh:/docker-entrypoint-initdb.d/create-db.sh"
+    restart: always
+
+volumes:
+  db_test_volume:
+  db_stg_volume:

@@ -1,0 +1,168 @@
+{% load static %}
+
+<nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-md-none">
+    <a class="navbar-brand me-lg-5" href="/">
+        <img class="navbar-brand-dark" src="{% static 'webapp/assets/img/sp-logo-image.png' %}" alt="Smart Parking"> <img class="navbar-brand-light" src="{% static 'webapp/assets/img/sp-logo-image.png' %}" alt="Smart Parking">
+    </a>
+    <div class="d-flex align-items-center">
+        <button class="navbar-toggler d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+<nav id="sidebarMenu" class="sidebar d-md-block bg-dark text-white collapse simplebar-scrollable-y"
+     data-simplebar="init" style="overflow-x: hidden;">
+    <div class="simplebar-wrapper" style="margin: 0;">
+        <div class="simplebar-height-auto-observer-wrapper">
+            <div class="simplebar-height-auto-observer"></div>
+        </div>
+        <div class="simplebar-mask">
+            <div class="simplebar-offset" style="right: 0; bottom: 0;">
+                <div class="simplebar-content-wrapper" style="height: auto; overflow: hidden scroll;">
+                    <div class="simplebar-content" style="padding: 0;">
+                        <div class="sidebar-inner px-4 pt-3 h-100" style="overflow-x: hidden;">
+                            <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar lg-avatar me-4">
+                                        {% if request.user.is_authenticated %}
+                                            <img src="{{ base_url }}{{ request.user.picture_key }}"
+                                                 class="card-img-top rounded-circle border-white" alt="Bonnie Green">
+                                        {% else %}
+                                             <img src="{% static 'webapp/assets/img/team/profile-picture-3.jpg' %}"
+                                                 class="card-img-top rounded-circle border-white" alt="Bonnie Green">
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-block">
+                                        {% if request.user.is_authenticated %}
+                                            <h2 class="h6">Hi, {{ request.user.username }}</h2>
+                                            <a href="{% url 'logout' %}" class="btn btn-secondary text-dark btn-xs">
+                                                <span class="me-2"><span class="fas fa-sign-out-alt"></span></span>Sign Out</a>
+                                        {% else %}
+                                            <a href="{% url 'logout' %}" class="btn btn-secondary text-dark btn-xs">
+                                                <span class="me-2"><span class="fas fa-sign-in-alt"></span></span>Sign In</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="collapse-close d-md-none">
+                                    <a href="#sidebarMenu" class="fas fa-times" data-bs-toggle="collapse"
+                                       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true"
+                                       aria-label="Toggle navigation"></a>
+                                </div>
+                            </div>
+                            <ul class="nav flex-column pt-3 pt-md-0">
+                                <li class="nav-item">
+                                    <a href="/" class="nav-link d-flex align-items-center">
+                                        <span class="sidebar-icon">
+                                            <img src="{% static 'webapp/assets/img/sp-logo-image.png' %}" style="width:40px !important; height:40px" alt="Smart Parking"/>
+                                        </span>
+                                        <span class="mt-1 sidebar-text">Smart Parking</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="dashboard">
+                                    <span class="nav-link d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> 
+                                            <span class="sidebar-text">Dashboard</span>
+                                        </span>
+                                    </span>
+                                </li>
+                                <li class="nav-item " id="profile">
+                                    <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+                                          data-bs-toggle="collapse" data-bs-target="#submenu-pages">
+                                    <span>
+                                        <span class="sidebar-icon"><span class="far fa-address-card"></span></span> 
+                                        <span class="sidebar-text">Profile</span>
+                                    </span>
+                                    <span class="link-arrow"><span class="fas fa-chevron-right"></span></span></span>
+                                    <div class="multi-level collapse " role="list" id="submenu-pages"
+                                         aria-expanded="false">
+                                        <ul class="flex-column nav">
+                                            <li class="nav-item " id="edit-information">
+                                                <a class="nav-link" href="{% url 'profile' %}">
+                                                    <span class="sidebar-text-contracted">EI</span>
+                                                    <span class="sidebar-text">Edit Information</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item " id="qr-code">
+                                                <a class="nav-link" href="{% url 'qrcode' %}">
+                                                    <span class="sidebar-text-contracted">QR</span>
+                                                    <span class="sidebar-text">QR code</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            
+                            
+                                <li class="nav-item " id="payment">
+                                    <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+                                          data-bs-toggle="collapse" data-bs-target="#submenu-app">
+                                    <span>
+                                        <span class="sidebar-icon"><span class="far fa-credit-card"></span></span> 
+                                        <span class="sidebar-text">Payment</span>
+                                    </span>
+                                    <span class="link-arrow"><span class="fas fa-chevron-right"></span></span> 
+                                    </span>
+                                    <div class="multi-level collapse " role="list" id="submenu-app"
+                                         aria-expanded="false">
+                                        <ul class="flex-column nav">
+                                            <li class="nav-item " id="payment-history">
+                                                <a class="nav-link" href="">
+                                                    <span class="sidebar-text-contracted">PH</span>
+                                                    <span class="sidebar-text">Payment History</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item " id="buy-ticket">
+                                                <a class="nav-link" href="{% url 'ticket_payment' %}?query=daily-ticket">
+                                                    <span class="sidebar-text-contracted">BT</span>
+                                                    <span class="sidebar-text">Buy Ticket</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            
+                                <li class="nav-item " id="parking-history">
+                                    <a href="" class="nav-link">
+                                        <span class="sidebar-icon"><span class="fas fa-parking"></span></span>
+                                        <span class="sidebar-text">Parking History</span>
+                                    </a>
+                                </li>
+
+                                <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
+                                {% if request.user.is_authenticated %}
+                                    <li class="nav-item " id="logout">
+                                        <a href="{% url 'logout' %}" class="nav-link">
+                                            <span class="sidebar-icon"><span class="fas fa-sign-out-alt text-danger"></span></span>
+                                            <span class="sidebar-text">Sign out</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item " id="login">
+                                        <a href="{% url 'login' %}" class="nav-link">
+                                            <span class="sidebar-icon"><span class="fas fa-sign-in-alt text-success"></span></span>
+                                            <span class="sidebar-text">Sign in</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item " id="register">
+                                        <a href="{% url 'register' %}" class="nav-link">
+                                            <span class="sidebar-icon"><span class="far fa-registered text-warning"></span></span>
+                                            <span class="sidebar-text">Sign up</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="simplebar-placeholder" style="width: 260px; height: 992px;"></div>
+    </div>
+    <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+        <div class="simplebar-scrollbar" style="width: 0; display: none;"></div>
+    </div>
+    <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+        <div class="simplebar-scrollbar" style="height: 898px; transform: translate3d(0px, 46px, 0px); display: block;"></div>
+    </div>
+</nav>

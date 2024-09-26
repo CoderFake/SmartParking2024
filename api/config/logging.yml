@@ -1,0 +1,31 @@
+version: 1
+formatters:
+  default:
+    use_colors: true
+  access:
+    use_colors: true
+  request:
+    class: uvicorn.logging.DefaultFormatter
+    format: '[%(asctime)s] :%(name)s:%(levelname)s: %(message)s'
+    use_colors: true
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: request
+    level: NOTSET
+    stream: ext://sys.stdout
+loggers:
+  uvicorn.error:
+    level: INFO
+    handlers:
+      - console
+    propagate: no
+  uvicorn.access:
+    level: INFO
+    handlers:
+      - console
+    propagate: no
+root:
+  level: NOTSET
+  handlers: [console]
+  propagate: no

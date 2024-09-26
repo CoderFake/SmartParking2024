@@ -1,0 +1,317 @@
+{% extends "webapp/layouts/base.html" %}
+
+{% load static %}
+{% block title %} Qr Code {% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <main class="container h-100 d-flex justify-content-center align-items-center">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-dismissible d-none" role="alert">
+                    <div class="message-tag">{{ message.tags }}</div>
+                    <div class="message">{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if rendered_at is not None %}
+            {% if rendered_at < 600000 %}
+                <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft justify-content-center align-content-center">
+                    <div class="container container-md-fluid">
+                        <div class="row">
+                            <div class="col-sm-6 mb-5 mb-sm-0 qrcode-image">
+                                <div id="qrOverlay">
+                                    <div class="load">
+                                        <hr/><hr/><hr/><hr/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 d-flex flex-column justify-content-start">
+                                <h3 class="text-center text-uppercase w-100">QR information</h3>
+                                <p class="text-center text-danger mb-5 w-100"><i class="text-warning fas fa-exclamation-triangle"></i> &nbsp; Keep QR information confidential</p>
+                                <p class="mt-sm-3"><b>ID: </b>{{ qrcode_id }}</p>
+                                <p class="mt-sm-3"><b>Created date: </b>{{ created_at|date:"H:i:s d-m-Y" }}</p>
+                                <p class="mt-sm-3"><b>Last modified date: </b>{{ modified_at|date:"H:i:s d-m-Y" }}</p>
+                            </div>
+                            <form id="type-request" class="col-12 d-flex flex-row gap-3 gap-sm-8 justify-content-center align-items-center mt-sm-5" action="{% url 'qrcode' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="button" name="hidden" class="button bg-primary rounded-3 p-2 pl-sm-4 pr-sm-4 text-white" value="Hidden">
+                                <input type="button" name="new_qr" class="button bg-primary rounded-3 p-2 pl-sm-4 pr-sm-4 text-white" value="New QR">
+                                <input type="submit" name="download" class="button bg-primary rounded-3 p-2 pl-sm-4 pr-sm-4 text-white" value="Download">
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            {% else %}
+                <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft justify-content-center align-content-center">
+                    <div class="container">
+                        <form id ="otp-form" class="form-container mt-3 mb-2 d-flex flex-column align-items-center align-content-between">
+                            {% csrf_token %}
+                            <div class="container text-center mt-3">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3 class="text-uppercase">OTP for QR code</h3>
+                                        <p>Generate an OTP code before you want to use the QR code<br>Enter the Code</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container otp-input">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group text-center">
+                                            <div class="otp-form-group mb-3">
+                                                <input type="password" minlength="1" maxlength="1" class="form-control otp-inputbar">
+                                                <input type="password" minlength="1" maxlength="1" class="form-control otp-inputbar">
+                                                <input type="password" minlength="1" maxlength="1" class="form-control otp-inputbar">
+                                                <input type="password" minlength="1" maxlength="1" class="form-control otp-inputbar">
+                                                <input type="password" minlength="1" maxlength="1" class="form-control otp-inputbar">
+                                                <input type="password" minlength="1" maxlength="1" class="form-control otp-inputbar">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <input type="button" class="form-control bg-primary rounded-3 text-center text-white mt-3 mb-3" value="Submit">
+                        </form>
+                    </div>
+                </section>
+            {% endif %}
+        {% else %}
+            <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft justify-content-center align-content-center">
+                <div class="container">
+                    <form id="otp-form"
+                          class="form-container mt-3 mb-2 d-flex flex-column align-items-center align-content-between">
+                        {% csrf_token %}
+                        <div class="container text-center mt-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="text-uppercase">OTP for QR code</h3>
+                                    <p>Generate an OTP code before you want to use the QR code<br>Enter the Code</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container otp-input">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group text-center">
+                                        <div class="otp-form-group mb-3">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container text-center mt-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="text-uppercase">Confirm OTP</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container otp-confirm-input">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group text-center">
+                                        <p>Enter the Code</p>
+                                        <div class="otp-form-group mb-3">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                            <input type="password" minlength="1" maxlength="1"
+                                                   class="form-control otp-inputbar">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="button" class="form-control bg-primary rounded-3 text-center text-white mt-3 mb-3"
+                               value="Submit">
+                    </form>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+{% endblock content %}
+
+{% block javascripts %}
+     <script>
+        $(document).ready(function () {
+            $('.alert-dismissible').each(function() {
+                createToast($(this).find('.message-tag').text(), $(this).find('.message').text());
+                $(this).remove();
+            });
+        })
+    </script>
+    <script>
+        const QR_URL_KEY = 'QR_URL';
+        let otpForm = $('#otp-form');
+        
+        function checkQrExpiration() {
+            const qrUrl = localStorage.getItem(QR_URL_KEY);
+        
+            {% if rendered_at and rendered_at > 600000 %}
+                localStorage.removeItem(QR_URL_KEY); 
+            {% else %}
+                showQrCode(qrUrl);
+            {% endif %}
+        }
+        
+        function showQrCode(qrUrl) {
+            $('#qrOverlay').remove();
+            const imgElement = `<img src="${qrUrl}" alt="QR Code" class="qr-image w-100 h-100" >`;
+            $('.qrcode-image').html(imgElement);
+        }
+        
+        $(document).ready(function () {
+            checkQrExpiration(); 
+        });
+
+    </script>
+    <script>
+        $(document).ready(function (){
+            
+            $('#type-request input[type="button"]').on('click', function (e){
+                e.preventDefault();
+                
+                let type = $(this).attr("name");
+                
+                $.ajax({
+                    url: '{% url "qrcode" %}',
+                    type: 'POST',
+                    data: {
+                        "type": type,
+                        'csrfmiddlewaretoken': $('#type-request input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function (response) {
+                        closeOverlay();
+
+                        if (response.status === 'success') {
+                            if (type === "new_qr")
+                                localStorage.setItem("QR_URL", response.image_url);
+                            window.location.reload();
+                            
+                        } else {
+                            createToast(response.status, response.message);
+                        }
+                    },
+                    error: function (response) {
+                        closeOverlay();
+                        createToast('error', response.message);
+                    }
+                });
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            let otpInputBar = $(".otp-inputbar");
+
+            otpInputBar.keypress(function (e) {
+                if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+                    createToast("error", "OTP must be digits!");
+                    return false;
+                }
+            });
+            otpInputBar.on("keyup keydown keypress", function (e) {
+                if ($(this).val()) {
+                    $(this).next().focus();
+                }
+                let KeyID = e.keyCode;
+                switch (KeyID) {
+                    case 8:
+                        $(this).val("");
+                        $(this).prev().focus();
+                        break;
+                    case 46:
+                        $(this).val("");
+                        $(this).prev().focus();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        })
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.form-control[type="button"]').click(function () {
+
+                loadOverlay();
+
+                var otp_code = '';
+                var confirm_otp_code = '';
+
+                $('.otp-input .otp-inputbar').each(function () {
+                    otp_code += $(this).val();
+                });
+
+                {% if qrcode_create %}
+                    if (otp_code.length !== 6) {
+                        createToast('error', 'OTP must be exactly 6 digits!');
+                        return;
+                    }
+                {% else %}
+                    $('.otp-confirm-input .otp-inputbar').each(function () {
+                        confirm_otp_code += $(this).val();
+                    });
+
+                    if (otp_code.length !== 6 || confirm_otp_code.length !== 6) {
+                        createToast('error', 'Both OTP and Confirm OTP must be exactly 6 digits!');
+                        return;
+                    }
+
+                    if (otp_code !== confirm_otp_code) {
+                        createToast('error', 'OTP and Confirm OTP do not match. Please try again!');
+                        return;
+                    }
+                {% endif %}
+
+                $.ajax({
+                    url: '{% url "qrcode" %}',
+                    type: 'POST',
+                    data: {
+                        'otp': otp_code,
+                        'confirm_otp': confirm_otp_code,
+                        'csrfmiddlewaretoken': $('#otp-form input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function (response) {
+                        closeOverlay();
+
+                        if (response.status === 'success') {
+                            localStorage.setItem("QR_URL", response.image_url);
+                            window.location.reload();
+
+                        } else {
+                            createToast(response.status, response.message);
+                        }
+                    },
+                    error: function (response) {
+                        closeOverlay();
+                        createToast('error', response.message);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock javascripts %}

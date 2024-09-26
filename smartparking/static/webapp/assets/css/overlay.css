@@ -1,0 +1,160 @@
+
+#LoadOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#LoadOverlay .btn:focus {
+    outline: none;
+}
+#LoadOverlay img{
+    max-height: 900px;
+}
+
+
+#LoadOverlay .load {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+}
+
+#LoadOverlay .load hr {
+    border: 0;
+    margin: 0;
+    width: 40%;
+    height: 40%;
+    position: absolute;
+    border-radius: 50%;
+    animation: spin 2s ease infinite
+}
+
+#LoadOverlay .load :first-child {
+    background: #24a3da;
+    animation-delay: -1.5s
+}
+
+#LoadOverlay .load :nth-child(2) {
+    background: #6bf3ad;
+    animation-delay: -1s
+}
+
+#LoadOverlay .load :nth-child(3) {
+    background: #f6b060;
+    animation-delay: -0.5s
+}
+
+#LoadOverlay .load :last-child {
+    background: #bc2e02
+}
+
+
+@keyframes spin {
+
+    0%,
+    100% {
+        transform: translate(0)
+    }
+
+    25% {
+        transform: translate(160%)
+    }
+
+    50% {
+        transform: translate(160%, 160%)
+    }
+
+    75% {
+        transform: translate(0, 160%)
+    }
+}
+
+.qrcode-image {
+    position: relative;
+}
+
+#qrOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #F9FAFB;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qrOverlay .btn:focus {
+    outline: none;
+}
+
+#qrOverlay img {
+    max-height: 100%;
+}
+
+#qrOverlay .load {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+#qrOverlay .load hr {
+    border: 0;
+    margin: 0;
+    width: 40%;
+    height: 40%;
+    position: absolute;
+    border-radius: 50%;
+    animation: qr-spin 2s ease infinite;
+}
+
+#qrOverlay .load :first-child {
+    background: #24a3da;
+    animation-delay: -1.5s;
+}
+
+#qrOverlay .load :nth-child(2) {
+    background: #6bf3ad;
+    animation-delay: -1s;
+}
+
+#qrOverlay .load :nth-child(3) {
+    background: #f6b060;
+    animation-delay: -0.5s;
+}
+
+#qrOverlay .load :last-child {
+    background: #bc2e02;
+}
+
+@keyframes qr-spin {
+    0%, 100% {
+        transform: translate(0);
+    }
+
+    25% {
+        transform: translate(160%);
+    }
+
+    50% {
+        transform: translate(160%, 160%);
+    }
+
+    75% {
+        transform: translate(0, 160%);
+    }
+}
+

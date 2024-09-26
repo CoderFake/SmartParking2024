@@ -1,0 +1,88 @@
+{% extends "webapp/layouts/base.html" %}
+
+{% load static %}
+{% block title %} Qr Code {% endblock %}
+
+{% block stylesheets %}
+    <link type="text/css" href="{% static 'webapp/assets/css/profile.css' %}"
+          rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-dismissible d-none" role="alert">
+                <div class="message-tag">{{ message.tags }}</div>
+                <div class="message">{{ message }}</div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container light-style flex-grow-1 h-100">
+    <h4 class="font-weight-bold py-3 mb-4">
+        Account settings
+    </h4>
+    <div class="card overflow-hidden">
+        <div class="row no-gutters row-bordered row-border-light">
+            <div class="col-md-3 pt-0">
+                <div class="list-group list-group-flush account-settings-links">
+                    <a class="list-group-item list-group-item-action active" data-toggle="list"
+                        href="#account-general">General</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list"
+                        href="#account-change-password">Change password</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list"
+                        href="#account-info">Info</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list"
+                        href="#account-social-links">Social links</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list"
+                        href="#account-connections">Connections</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list"
+                        href="#account-notifications">Notifications</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <form id="profile-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control mb-1" value="{{ request.user.username }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{ request.user.phone_number }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <input type="text" name="email" class="form-control mb-1" value="{{ request.user.email }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" name="address" class="form-control mb-1" value="{{ request.user.address }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Profile Picture</label>
+                <input type="file" name="profile_picture" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </form>
+            
+            </div>
+        </div>
+    </div>
+    <div class="text-right mt-3">
+        <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+        <button type="button" class="btn btn-default">Cancel</button>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+     <script>
+        $(document).ready(function () {
+            $('.alert-dismissible').each(function() {
+                createToast($(this).find('.message-tag').text(), $(this).find('.message').text());
+                $(this).remove();
+            });
+        })
+    </script>
+{% endblock javascripts %}

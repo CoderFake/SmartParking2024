@@ -1,0 +1,216 @@
+{% extends "webapp/layouts/base.html" %}
+{% load static %}
+
+{% block title %} Sign Up {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    
+    <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
+            <div class="container">
+                <div class="logo-image d-flex justify-content-center"><img
+                        src="{% static 'webapp/assets/img/sp-text.png' %}" width="650"/></div>
+                <div class="row justify-content-center form-bg-image mb-sm-5 mb-lg-8 "
+                     data-background-lg="{% static 'webapp/assets/img/illustrations/signin.svg' %}">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                            <div class="text-center text-md-center mb-4 mt-md-0">
+                                <h1 class="mb-0 h3">
+                                    Sign Up
+                                </h1>
+                                <br/>
+                                <p>
+                                    {% if msg %}
+                                        {{ msg | safe }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <form method="post" action="" class="mt-4">
+
+                                {% csrf_token %}
+
+                                <div class="form-group mb-4">
+                                    <label for="username">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <span class="fas fa-user-circle"></span>
+                                        </span>
+                                        <input class="form-control" type="text" id="username" name="username"
+                                               required/>
+                                    </div>
+                                </div>
+
+                                <!-- Form -->
+                                <div class="form-group mb-4">
+                                    <label for="email">Your Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <span class="fas fa-envelope"></span>
+                                        </span>
+                                        <input class="form-control" type="email" id="email" name="email" required/>
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
+                                <div class="form-group">
+                                    <!-- Form -->
+                                    <div class="form-group mb-4">
+                                        <label for="password">Your Password</label>
+                                        <div class="input-group password-group">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <span class="fas fa-unlock-alt show-password"></span>
+                                            </span>
+                                            <input class="form-control" id="password" type="password" name="password"
+                                                   required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="confirm-password">Password Confirmation</label>
+                                        <div class="input-group confirm-password-group">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <span class="fas fa-unlock-alt show-password"></span>
+                                            </span>
+                                            <input class="form-control" id="confirm-password" type="password"
+                                                   name="confirm_password" required/>
+                                        </div>
+                                    </div>
+
+                                    <!-- End of Form -->
+                                    <div class="mb-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="remember">
+                                            <label class="form-check-label fw-normal mb-0" for="remember">
+                                                I agree to the <a href="#" class="fw-bold">terms and conditions</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="button" name="register" id="btnRegister"
+                                            class="btn register btn-gray-800">Sign Up
+                                    </button>
+                                </div>
+                            </form>
+                            <br/>
+
+                            <div class="d-flex justify-content-center align-items-center mt-4">
+                                <span class="fw-normal">
+                                    Already have an account? 
+                                    <a href="{% url 'login' %}" class="fw-bold">Sign In</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+            $('.show-password').on('click', function () {
+
+                let input = $(this).closest('.input-group').find('input');
+
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                } else {
+                    input.attr('type', 'password');
+                }
+
+                $(this).toggleClass('fa-unlock-alt fa-lock');
+            });
+
+
+            $('#password, #confirm-password').on('input', function () {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirm-password').val();
+
+                $('.password-group, .confirm-password-group').find('*').css('border', 'none');
+                if (password !== confirmPassword && password && confirmPassword) {
+                    $('.password-group , .confirm-password-group').css('border', '2px solid #dc3545');
+                } else if (password && confirmPassword) {
+                    $('.password-group , .confirm-password-group').css('border', '2px solid #28a745');
+                } else {
+                    $(this).removeAttr('style');
+                    $(this).find('*').removeAttr('style');
+                }
+
+            });
+
+
+        });
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    
+        const firebaseConfig = {{ firebaseConfig|safe }};
+        const app = initializeApp(firebaseConfig);
+    
+        const signUp = document.getElementById('btnRegister');
+        signUp.addEventListener('click', async (event) => {
+            event.preventDefault();
+            loadOverlay();
+    
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm-password').value;
+            const username = document.getElementById('username').value;
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    
+            if (password !== confirm_password) {
+                createToast('error', "Passwords don't match");
+                closeOverlay();
+                return;
+            }
+    
+            try {
+                const auth = getAuth(app);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, {
+                    displayName: username
+                });
+                const user = userCredential.user;
+                const idToken = await user.getIdToken();
+                const userData = {
+                    email: email,
+                    username: username,
+                    idToken: idToken
+                };
+                
+                const response = await fetch('{% url "register" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(userData)
+                });
+    
+                const data = await response.json();
+    
+                if (data.status === 'success') {
+                    window.location.href = '{% url "login" %}';
+                } else {
+                    createToast('error', data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                createToast('error', 'An error occurred during registration.');
+            } finally {
+                closeOverlay();
+            }
+        });
+    </script>
+
+
+{% endblock javascripts %}

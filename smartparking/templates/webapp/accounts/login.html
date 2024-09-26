@@ -1,0 +1,233 @@
+{% extends "webapp/layouts/base.html" %}
+
+{% load static %}
+{% block title %} Sign In {% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-dismissible d-none" role="alert">
+                <div class="message-tag">{{ message.tags }}</div>
+                <div class="message">{{ message }}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
+        <div class="container">
+            <div class="logo-image d-flex justify-content-center"><img
+                    src="{% static 'webapp/assets/img/sp-text.png' %}" width="650"/></div>
+            <div class="row justify-content-center form-bg-image"
+                 data-background-lg="{% static 'webapp/assets/img/illustrations/signin.svg' %}">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                        <div class="text-center text-md-center mt-md-0">
+                            <h1 class="mb-0 h3 text-uppercase">
+                                Sign In
+                            </h1>
+                            <p>
+                                {% if msg %}
+                                    {{ msg | safe }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-12 social-buttons d-flex justify-content-center align-items-center gap-4">
+                            <a class="rounded-circle" id="btnGoogle">
+                                <img width="35" height="35" src="{% static 'webapp/assets/img/icons/google.svg' %}"
+                                     alt="google"/>
+                            </a>
+                            <a class="rounded-circle" id="btnFacebook">
+                                <img width="42" height="42"
+                                     src="{% static 'webapp/assets/img/icons/facebook.svg' %}" alt="facebook"/>
+                            </a>
+                            <a class="rounded-circle" id="btnMicrosoft">
+                                <img width="40" height="40"
+                                     src="{% static 'webapp/assets/img/icons/microsoft.svg' %}" alt="microsoft"/>
+                            </a>
+                        </div>
+                        <div class="col-12 text-center mt-3"><h5>or</h5></div>
+                        <form method="post" action="{% url 'login' %}" class="mt-4">
+                            {% csrf_token %}
+                            <!-- Form -->
+                            <div class="form-group mb-4">
+                                <label for="email">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <span class="fas fa-user-circle"></span>
+                                    </span>
+                                    <input class="form-control" id="email" type="email" name="email" required/>
+                                </div>
+                            </div>
+                            <!-- End of Form -->
+                            <div class="form-group">
+                                <!-- Form -->
+                                <div class="form-group mb-4">
+                                    <label for="password">Your Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon2">
+                                            <span class="show-password fas fa-eye"></span>
+                                        </span>
+                                        <input class="form-control" id="password" type="password" name="password"
+                                               required/>
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
+                                <div class="d-flex justify-content-between align-items-top mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="remember">
+                                        <label class="form-check-label mb-0" for="remember">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <div><a href="/page-forgot-password.html" class="small text-right">Lost
+                                        password?</a></div>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" name="login" class="btn btn-login btn-gray-800">Sign In</button>
+                            </div>
+                        </form>
+                        <br/>
+
+                        <div class="d-flex justify-content-center align-items-center mt-4">
+                            <span class="fw-normal">
+                                Not registered?
+                                <a href="{% url 'register' %}" class="fw-bold">Create account</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+            $('.show-password').on('click', function () {
+                if ($(this).hasClass('fa-eye')) {
+                    $('#password').attr('type', 'text');
+                    $(this).addClass('fa-eye-slash').removeClass('fa-eye');
+                } else {
+                    $('#password').attr('type', 'password');
+                    $(this).addClass('fa-eye').removeClass('fa-eye-slash');
+                }
+            })
+
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.alert-dismissible').each(function() {
+                createToast($(this).find('.message-tag').text(), $(this).find('.message').text());
+                $(this).remove();
+            });
+        })
+    </script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import {
+            getAuth,
+            signInWithPopup,
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            OAuthProvider,
+            fetchSignInMethodsForEmail
+        } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    
+        const firebaseConfig = {{ firebaseConfig|safe }};
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const ggProvider = new GoogleAuthProvider();
+        const fbProvider = new FacebookAuthProvider();
+        const msProvider = new OAuthProvider('microsoft.com');
+    
+        ggProvider.setCustomParameters({
+            'display': 'popup'
+        });
+    
+        fbProvider.setCustomParameters({
+            'display': 'popup'
+        });
+    
+        const btnGoogle = document.getElementById('btnGoogle');
+        const btnFaceBook = document.getElementById('btnFacebook');
+        const btnMicrosoft = document.getElementById('btnMicrosoft');
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    
+        async function handleSuccess(result, provider) {
+            try {
+                const idToken = await result.user.getIdToken();  
+                const response = await fetch("{% url 'login' %}", { 
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken  
+                    },
+                    body: JSON.stringify({ idToken })
+                });
+    
+                const data = await response.json();
+                if (data.status === "success") {
+                    window.location.href = data.next;
+                } else {
+                    createToast(data.status, data.message); 
+                }
+            } catch (error) {
+                createToast(error.status, error.message); 
+            }
+        }
+    
+        async function handleError(error) {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+    
+            if (errorCode === 'auth/account-exists-with-different-credential') {
+                const email = error.customData.email;
+                const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+                createToast("error", `Account exists with different credential, Please sign in using: ${signInMethods.join(', ')}`);
+            } else {
+                createToast("error", "Authentication Error");
+            }
+        }
+    
+        btnGoogle.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                const result = await signInWithPopup(auth, ggProvider);
+                await handleSuccess(result, GoogleAuthProvider);
+            } catch (error) {
+                await handleError(error);
+            }
+        });
+    
+        btnFaceBook.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                const result = await signInWithPopup(auth, fbProvider);
+                await handleSuccess(result, FacebookAuthProvider);
+            } catch (error) {
+                await handleError(error);
+            }
+        });
+    
+        btnMicrosoft.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                const result = await signInWithPopup(auth, msProvider);
+                await handleSuccess(result, OAuthProvider);
+            } catch (error) {
+                await handleError(error);
+            }
+        });
+    </script>
+    
+{% endblock javascripts %}
